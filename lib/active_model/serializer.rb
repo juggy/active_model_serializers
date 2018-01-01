@@ -475,8 +475,6 @@ module ActiveModel
 
     alias :read_attribute_for_serialization :send
 
-<<<<<<< HEAD
-=======
     def _serializable_hash
       return nil if @object.nil?
       attributes
@@ -490,7 +488,6 @@ module ActiveModel
       ActiveSupport::Cache.expand_cache_key(args)
     end
 
->>>>>>> 0-8-stable
     # Use ActiveSupport::Notifications to send events to external systems.
     # The event name is: name.class_name.serializer
     def instrument(name, payload = {}, &block)
