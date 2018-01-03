@@ -37,13 +37,14 @@ module ActiveModel
         end
 
         def option(key, default=nil)
-          if @options.key?(key)
+          key = if @options.key?(key)
             @options[key]
           elsif self.class.options.key?(key)
             self.class.options[key]
           else
             default
           end
+          camelize_value key
         end
 
         def target_serializer
@@ -88,6 +89,12 @@ module ActiveModel
         end
 
       protected
+        def camelize_value(value)
+          if serializer_class && serializer_class.respond_to?(:camelize_value)
+            return serializer_class.camelize_value value
+          end
+          ActiveModel::Serializer.camelize_value value
+        end
 
         def find_serializable(object)
           if target_serializer
@@ -105,7 +112,7 @@ module ActiveModel
           if key = option(:key)
             key
           elsif embed_ids?
-            "#{@name.to_s.singularize}_ids".to_sym
+            camelize_value("#{@name.to_s.singularize}_ids").to_sym
           else
             @name
           end
@@ -170,7 +177,7 @@ module ActiveModel
           if key = option(:key)
             key
           elsif embed_ids? && !polymorphic?
-            "#{@name}_id".to_sym
+            camelize_value("#{@name}_id").to_sym
           else
             @name
           end
@@ -185,7 +192,7 @@ module ActiveModel
         end
 
         def polymorphic_key
-          associated_object.class.to_s.demodulize.underscore.to_sym
+          camelize_value associated_object.class.to_s.demodulize.underscore.to_sym
         end
 
         def serialize
