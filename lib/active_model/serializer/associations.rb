@@ -90,8 +90,8 @@ module ActiveModel
 
       protected
         def camelize_value(value)
-          if serializer_class && serializer_class.respond_to?(:camelize_value)
-            return serializer_class.camelize_value value
+          if source_serializer && source_serializer.respond_to?(:camelize_value)
+            return source_serializer.camelize_value value
           end
           ActiveModel::Serializer.camelize_value value
         end
